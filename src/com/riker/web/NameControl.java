@@ -1,5 +1,6 @@
 package com.riker.web;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -46,10 +48,24 @@ public class NameControl extends HttpServlet {
 	public static final String LOGGER_PATH = "/WEB-INF/config/log4j.properties";
 	
 	public void init(ServletConfig config) throws ServletException {
+		System.out.println("Log4JInitServlet is initializing log4j");
+		String log4jLocation = config.getInitParameter("log4j-properties-location");
+
 		ServletContext sc = config.getServletContext();
-		String fullPath = sc.getRealPath(LOGGER_PATH);
-		PropertyConfigurator.configure(fullPath);
-		log.info("Loaded Servlet: " + fullPath);
+
+		if (log4jLocation == null) {
+			BasicConfigurator.configure();
+		} else {
+			String webAppPath = sc.getRealPath("/");
+			String log4jProp = webAppPath + log4jLocation;
+			File file = new File(log4jProp);
+			if (file.exists()) {
+				PropertyConfigurator.configure(log4jProp);
+			} else {
+				BasicConfigurator.configure();
+			}
+		}
+		super.init(config);
 	}
 	
 	
@@ -65,24 +81,16 @@ public class NameControl extends HttpServlet {
 	
 	public void processRequest(HttpServletRequest req, HttpServletResponse res) 
 	throws IOException, ServletException{
-		String val = req.getParameter("submitted") == null ? "false" : req.getParameter("submitted");
-		boolean submitted = Boolean.valueOf(val);
-		String name = "";
-		log.info("Submitted: " + submitted);
-		if (submitted){
-			name = req.getParameter("name");
+		
 
-		} else {
-			ModelName mn = new ModelName();
-			log.info("Its working");
+		ModelName mn = new ModelName();
+		log.info("model name instance, started");
+			req = mn.getName(req);
 			
-			name = mn.getName();
-		}
-		
-		req.setAttribute("name", name);
-		
+			
 		//makes an instance of the view
-		RequestDispatcher view = req.getRequestDispatcher("/WEB-INF/include/results.jsp");
+		RequestDispatcher view = 
+				req.getRequestDispatcher("/WEB-INF/include/results.jsp");
 		//sends the request and response objects with new data to the view
 		view.forward(req, res);
 	}

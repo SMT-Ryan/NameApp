@@ -10,7 +10,13 @@
 	<servlet>
 		<servlet-name>NameControl</servlet-name>
 		<servlet-class>com.riker.web.NameControl</servlet-class>
+				<init-param>
+			<param-name>log4j-properties-location</param-name>
+			<param-value>WEB-INF/config/log4j.properties</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
 	</servlet>
+	
 	<servlet-mapping>
 		<servlet-name>NameControl</servlet-name>
 		<url-pattern>/Namedo</url-pattern>
