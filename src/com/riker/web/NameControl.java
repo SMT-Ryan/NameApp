@@ -45,6 +45,19 @@ public class NameControl extends HttpServlet {
 	 */
 	public static final Logger log = Logger.getLogger(NameControl.class);
 
+	/**
+	 * sting location for configuration of log4j, this data would like be stored
+	 * in the config file.
+	 */
+	public static final String LOG_CONFIG_LOCATION = "log4j-properties-location";
+
+	/**
+	 * String location for view path this data would like be stored
+	 * in the config file.
+	 */
+	public static final String RESULTS_PATH = "/WEB-INF/include/results.jsp";
+
+
 
 	/**
 	 * This method over rides the init method to load and configure the 
@@ -52,13 +65,14 @@ public class NameControl extends HttpServlet {
 	 */
 	public void init(ServletConfig config) throws ServletException {
 
-		String log4jLocation = config.getInitParameter("log4j-properties-location");
+		String log4jLocation = config.getInitParameter(LOG_CONFIG_LOCATION);
 
 		ServletContext sc = config.getServletContext();
 
 		if (log4jLocation == null) {
 			BasicConfigurator.configure();
 		} else {
+
 			String webAppPath = sc.getRealPath("/");
 			String log4jProp = webAppPath + log4jLocation;
 			File file = new File(log4jProp);
@@ -103,11 +117,11 @@ public class NameControl extends HttpServlet {
 		// old request object with the altered new request object
 		ModelName mn = new ModelName();
 		log.info("model name instance, started");
-		req = mn.getName(req);
+		mn.getName(req);
 
 		//makes an instance of the view
 		RequestDispatcher view = 
-				req.getRequestDispatcher("/WEB-INF/include/results.jsp");
+				req.getRequestDispatcher(RESULTS_PATH);
 		//sends the request and response objects with new data to the view
 		view.forward(req, res);
 	}
