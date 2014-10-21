@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.0" metadata-complete="true"
-	xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns="http://java.sun.com/xml/ns/javaee" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 	http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
 
-   <description>PUT SOMETHING HERE</description>
-   <display-name>Test</display-name>
+	<description>
+   	Servlet name and mapping xml for a short simple web app.   
+   </description>
+	<display-name>Test</display-name>
 	<servlet>
 		<servlet-name>NameControl</servlet-name>
 		<servlet-class>com.riker.web.NameControl</servlet-class>
-				<init-param>
+		<init-param>
 			<param-name>log4j-properties-location</param-name>
 			<param-value>WEB-INF/config/log4j.properties</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-	
+
 	<servlet-mapping>
 		<servlet-name>NameControl</servlet-name>
 		<url-pattern>/Namedo</url-pattern>

@@ -1,16 +1,26 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
+"http://www.w3.org/TR/html4/loose.dtd">
 <html>
+<!--
+-	Title: result.jsp
+-	Description: This page is the dynamically generated response  
+-	Copyright: Copyright (c) 2014
+-	Company: Silicon Mountain Technologies
+-	@author: Ryan J Riker
+-	@Version 1.1
+-	@since 10/20/2014
+-	Last update: Never 
+-->
+
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 </head>
 <body>
-
-My name is ${name}
-
+	<h1>My name is ${name}</h1>
 
 </body>
 </html>

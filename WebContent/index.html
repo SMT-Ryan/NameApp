@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <!--
 -	Title: index.html
 -	Description: This page will get a dynamically generated response  
@@ -9,19 +9,21 @@
 -	@since 10/20/2014
 -	Last update: Never 
 -->
-<html lang="en" >
-	<head>
-		<meta charset="utf-8" />
-		<title>What's my name</title>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>What's your name</title>
 <body>
 
-<form method="POST" action="Namedo">
-<input type="hidden" name="submitted" value="true" /> 
-<p>
-Would you like to know my name? Click the Yes button.
-</p>
-<input type="text" name="name" value="n/a" /> 
-<button name="name" type="submit" value="rjr">Yes</button>
-</form>
+	<form method="POST" action="Namedo">
+		<input type="hidden" name="submitted" value="true" />
+		<p>
+			This web app will use a dynamically created page to tell you your own
+			name. If you don't tell it your name it will tell you mine. <br />
+			<br /> Would you like to know my name? Click the Yes button.
+		</p>
+		<input type="text" name="name" value="n/a" />
+		<button name="name" type="submit" value="rjr">Yes</button>
+	</form>
 </body>
 </html>
