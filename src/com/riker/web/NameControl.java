@@ -1,20 +1,17 @@
 package com.riker.web;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 
+import com.riker.configuration.ConfigFileLoader;
 import com.riker.model.ModelName;
 
 /****************************************************************************
@@ -39,6 +36,16 @@ public class NameControl extends HttpServlet {
 	 * constant serial id for this servlet.  
 	 */
 	private static final long serialVersionUID = 1138L;
+	
+	/**
+	 * constant location of config file
+	 */
+	private final String CONFIG_FILE_PATH = "config/NameApp.Properties";
+	
+	/**
+	 * constant key separator for config file
+	 */
+	private String KEY_SEPARATOR = "=";
 
 	/**
 	 * starting an instance of the log4j logger
@@ -46,44 +53,17 @@ public class NameControl extends HttpServlet {
 	public static final Logger log = Logger.getLogger(NameControl.class);
 
 	/**
-	 * sting location for configuration of log4j, this data would like be stored
-	 * in the config file.
-	 */
-	public static final String LOG_CONFIG_LOCATION = "log4j-properties-location";
-
-	/**
 	 * String location for view path this data would like be stored
 	 * in the config file.
 	 */
 	public static final String RESULTS_PATH = "/WEB-INF/include/results.jsp";
 
-
-
 	/**
-	 * This method over rides the init method to load and configure the 
-	 * log4j logger, using data from the web.xml
+	 * This method over rides the init 
 	 */
 	public void init(ServletConfig config) throws ServletException {
-
-		String log4jLocation = config.getInitParameter(LOG_CONFIG_LOCATION);
-
-		ServletContext sc = config.getServletContext();
-
-		if (log4jLocation == null) {
-			BasicConfigurator.configure();
-		} else {
-
-			String webAppPath = sc.getRealPath("/");
-			String log4jProp = webAppPath + log4jLocation;
-			File file = new File(log4jProp);
-			if (file.exists()) {
-				PropertyConfigurator.configure(log4jProp);
-			} else {
-				BasicConfigurator.configure();
-			}
-		}
-		super.init(config);
-		log.info("the logger is configured and running");
+	
+		
 	}
 
 	/**
@@ -112,7 +92,9 @@ public class NameControl extends HttpServlet {
 	 */
 	public void processRequest(HttpServletRequest req, HttpServletResponse res) 
 			throws IOException, ServletException{
-
+		
+		configApp();
+		
 		//creates a new instance of the model, and writes over the 
 		// old request object with the altered new request object
 		ModelName mn = new ModelName();
@@ -124,5 +106,22 @@ public class NameControl extends HttpServlet {
 				req.getRequestDispatcher(RESULTS_PATH);
 		//sends the request and response objects with new data to the view
 		view.forward(req, res);
+	}
+
+	/**
+	 * Configures the properties
+	 */
+	private void configApp() {
+		//loads config file and sets up setters for filling data
+		ConfigFileLoader cfl = new ConfigFileLoader();
+		cfl.setConfigFilePath(CONFIG_FILE_PATH);
+
+		try {
+			cfl.configData(KEY_SEPARATOR);
+		} catch (IOException e) {
+			log.error("An error has occured, the file isnt found or the file"
+					+ " isnt readable.");
+			e.printStackTrace();
+		}
 	}
 }

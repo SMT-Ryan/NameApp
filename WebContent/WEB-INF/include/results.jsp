@@ -21,6 +21,7 @@
 </head>
 <body>
 	<h1>My name is ${name}</h1>
+	<h2>The count is: ${TrafficCount}</h2>
 
 </body>
 </html>
