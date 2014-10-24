@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.riker.configuration.ConfigFileLoader;
 import com.riker.model.ModelName;
 
 /****************************************************************************
@@ -38,11 +37,6 @@ public class NameControl extends HttpServlet {
 	private static final long serialVersionUID = 1138L;
 	
 	/**
-	 * constant location of config file
-	 */
-	private final String CONFIG_FILE_PATH = "config/NameApp.Properties";
-	
-	/**
 	 * constant key separator for config file
 	 */
 	private String KEY_SEPARATOR = "=";
@@ -56,13 +50,21 @@ public class NameControl extends HttpServlet {
 	 * String location for view path this data would like be stored
 	 * in the config file.
 	 */
-	public static final String RESULTS_PATH = "/WEB-INF/include/results.jsp";
+	public static final String RESULTS_PATH = "WEB-INF/include/results.jsp";
+	
+	/**
+	 * Variable that will hold the location of the target jsp
+	 */
+	public static String resultsPath = null;
 
 	/**
-	 * This method over rides the init 
+	 * This method over rides the init calls the configure method to 
+	 * load properties
 	 */
 	public void init(ServletConfig config) throws ServletException {
-	
+		log.info("init name control called");
+		configApp();
+		log.info("configure method called at init");
 		
 	}
 
@@ -93,7 +95,7 @@ public class NameControl extends HttpServlet {
 	public void processRequest(HttpServletRequest req, HttpServletResponse res) 
 			throws IOException, ServletException{
 		
-		configApp();
+
 		
 		//creates a new instance of the model, and writes over the 
 		// old request object with the altered new request object
@@ -113,15 +115,22 @@ public class NameControl extends HttpServlet {
 	 */
 	private void configApp() {
 		//loads config file and sets up setters for filling data
-		ConfigFileLoader cfl = new ConfigFileLoader();
-		cfl.setConfigFilePath(CONFIG_FILE_PATH);
+		//ConfigFileLoader cfl = new ConfigFileLoader();
+		log.info("config file loader instance created");
+		//cfl.setServletContext(this.getServletContext());
+		log.info("context sent to config file loader");
+		//cfl.setConfigFilePath(CONFIG_FILE_PATH);
 
-		try {
+		/*try {
 			cfl.configData(KEY_SEPARATOR);
 		} catch (IOException e) {
 			log.error("An error has occured, the file isnt found or the file"
 					+ " isnt readable.");
 			e.printStackTrace();
-		}
+		}*/
+		
+		//gets the property stored for the results path
+		//resultsPath = cfl.getProperties().get(RESULTS_PATH);
+		log.debug("results path is: " + resultsPath);
 	}
 }

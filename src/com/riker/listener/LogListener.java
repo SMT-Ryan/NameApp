@@ -9,7 +9,6 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
-import com.riker.web.NameControl;
 
 
 /****************************************************************************
@@ -25,13 +24,13 @@ import com.riker.web.NameControl;
  * @updates:
  ****************************************************************************/
 @WebListener
-public class NameAppLogListener implements ServletContextListener {
-
-
+public class LogListener implements ServletContextListener {
+	
+	
 	/**
 	 * starting an instance of the log4j logger
 	 */
-	public static final Logger log = Logger.getLogger(NameControl.class);
+	public static final Logger log = Logger.getLogger(LogListener.class);
 
 	/**
 	 * sting location for configuration of log4j, this data would like be stored
@@ -47,25 +46,40 @@ public class NameAppLogListener implements ServletContextListener {
 	 */
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
-		System.out.println("listener context Initialized2");
-		//load and config logger
+		System.out.println("logger config listener initialized");
 
-		// initialize log4j here
-
-
+		// get servlet context
 		ServletContext context = event.getServletContext();
-		String log4jConfigPath = context.getInitParameter("log4j-config-location") + "";
-		log4jConfigPath.trim();
+		
+		//load path to prop file
+		pathToFile(context);
 
-		if (log4jConfigPath.length() > 0){
-				
-			//if a path to a file exists the listener will search for that configuration
+		
+	}
+
+	/**
+	 * @param context 
+	 * @param event 
+	 * 
+	 */
+	private void pathToFile(ServletContext context) {
+		
+		//TODO replace with properties stuff later
+		String configPath = context.getInitParameter("log4j-config-location") + "";
+		configPath.trim();
+		
+		if (configPath.length() > 0){
 			
-			System.out.println("the log4jConfigFile is: " + log4jConfigPath );
+			//if a path to a file exists the listener will search for that 
+			//configuration
+			
+			System.out.println("the Logger config file path is: **" + 
+					configPath + "**");
 
-			String fullPath = context.getRealPath("/") + log4jConfigPath;
+			String fullPath = context.getRealPath("/") + configPath;
 
-			System.out.println("the full path is: ***" + fullPath +"**");
+			System.out.println("the full Logger config file  path is: **" + 
+					fullPath +"**");
 
 			PropertyConfigurator.configure(fullPath);
 
@@ -73,9 +87,10 @@ public class NameAppLogListener implements ServletContextListener {
 		}else{
 			//if the path is blank or null it will use the basic config for log4j
 			System.out.println("the log4j path is blank please check the web.xml"
-					+ " is: ***" + log4jConfigPath +"** basic configurator used");
+					+ " is: ***" + configPath +"** basic configurator used");
 			BasicConfigurator.configure();
 		}
+		
 	}
 
 	/**
@@ -85,7 +100,7 @@ public class NameAppLogListener implements ServletContextListener {
 	 */
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
-		System.out.println("listener context Destroyed");
+		System.out.println("log listener context Destroyed");
 		//do nothing let the garbage collector take it
 	}
 
