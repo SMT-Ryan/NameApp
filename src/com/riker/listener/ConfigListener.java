@@ -28,64 +28,118 @@ import org.apache.log4j.PropertyConfigurator;
  ****************************************************************************/
 @WebListener
 public class ConfigListener implements ServletContextListener {
-	
-	Properties prop = new Properties();
-	static String configFilePath = null;
 
-    /**
-     * Default constructor. 
-     */
-    public ConfigListener() {
-        System.out.println("config listner is constructed");
-      
-        
-    }
+	//the soon to be filled properties object
+	Properties prop = new Properties();
+	
+	/**
+	 * IO error message for the web app.
+	 */
+	private static final String APP_CANT_BE_CONFIGURED_IO = "App can not be "
+			+ "configured, please check that the web.xml, the apps .properties "
+			+ "file, and both files locations are correct.";
+	
+	static String configFilePath = null;
+	static String fullPath = null;
+	static String separator = null;
+	
+	/**
+	 * Blank Path Error message for web app.
+	 */
+	private static final String BLANK_PATH_ERROR = "the config path is blank please check the web.xml"
+			+ " is: ***" + configFilePath +"** basic configurator used";
 
 	/**
-     * @see ServletContextListener#contextInitialized(ServletContextEvent)
-     */
-    public void contextInitialized(ServletContextEvent event)  { 
-    	System.out.println("config listner initialized call");
+	 * Default constructor. 
+	 */
+	public ConfigListener() {
+		//TODO remove
+		System.out.println("config listner is constructed");
+	}
+
+	/**
+	 * This method gets the servlet context and controls the configuration process
+	 * 
+	 * @see ServletContextListener#contextInitialized(ServletContextEvent)
+	 */
+	public void contextInitialized(ServletContextEvent event) { 
+		//TODO remove
+		System.out.println("config listner initialized call");
+
+		//gets context
 		ServletContext context = event.getServletContext();
-		String configPath = context.getInitParameter("config-location") + "";
-		configPath.trim();
+
+		//gets params from web.xml
+		getConfigParam(context);
+
+		//changes the internal paths into real paths
+		pathToFile(context);
+
+		//loads the content of the config file into a property object
+		try {
+			configData(separator);
+		} catch (IOException e) {
+			System.out.println(APP_CANT_BE_CONFIGURED_IO);
+			e.printStackTrace();
+		}
 		
-		
-		if (configPath.length() > 0){
-			
+		//places the properties into context
+		context.setAttribute("properties", prop);
+	}
+
+	/**
+	 * This method changes the file path in the web.xml file into the real 
+	 * file path on the local machine.
+	 * @param context
+	 */
+	private void pathToFile(ServletContext context) {
+
+		if (configFilePath.length() > 0){
+
 			//if a path to a file exists the listener will search for that 
 			//configuration
-			
-			//TODO remove some of these debugging messages
+
+			//TODO remove 
 			System.out.println("the file loader config file path is: **" + 
-					configPath + "**");
+					configFilePath + "**");
 
-			String fullPath = context.getRealPath("/") + configPath;
-
+			fullPath = context.getRealPath("/") + configFilePath;
+			//TODO remove
 			System.out.println("the file loader config file  path is: **" + 
 					fullPath +"**");
 
 			PropertyConfigurator.configure(fullPath);
 
-			System.out.println("NameAppLogListener file loader config has "
-					+ "initalized and is running");
 		}else{
 			//if the path is blank or null it will use the basic config for log4j
-			System.out.println("the config path is blank please check the web.xml"
-					+ " is: ***" + configPath +"** basic configurator used");
+			System.out.println(BLANK_PATH_ERROR);
 			BasicConfigurator.configure();
 		}
-		
-		
-    }
+
+	}
 
 	/**
-     * @see ServletContextListener#contextDestroyed(ServletContextEvent)
-     */
-    public void contextDestroyed(ServletContextEvent arg0)  { 
-    	System.out.println("config listner destroyed");
-    }
-	
+	 * This method gets the configuration parameters from the web.xml file
+	 * @param context 
+	 * 
+	 */
+	private void getConfigParam(ServletContext context) {
+
+		configFilePath = context.getInitParameter("config-location") + "";
+		configFilePath.trim();
+		separator = context.getInitParameter("config-separator") + "";
+		configFilePath.trim();
+
+	}
+
+	/**
+	 * This method destroys the listener
+	 * @see ServletContextListener#contextDestroyed(ServletContextEvent)
+	 */
+	public void contextDestroyed(ServletContextEvent arg0)  { 
+		System.out.println("config listner destroyed");
+	}
+
 	/**
 	 * Locates the configuration file in the file system, and loads the 
 	 * file as a properties object with dynamically set separating key
@@ -94,26 +148,54 @@ public class ConfigListener implements ServletContextListener {
 	 * @throws IOException if the config file can not be read, throws a
 	 * file not found exception if the config file can not be opened.
 	 */
-	public void configData(String keySeparator) throws IOException{
+	private void configData(String keySeparator) throws IOException{
 
+		int delimitDigit = 0;
+		String key = null;
+		String value = null;
+		StringBuilder sb = new StringBuilder();
 
-		int separator = 0;
-		
-		//TODO get real path to confilFilePath
-		
 		BufferedReader br = new BufferedReader(
-				new FileReader(configFilePath));
+				new FileReader(fullPath));
 		String line = br.readLine();
 
-		//iterate over each line in the config file and load the has map
-		//with keys from the left side of the =' and values from the right 
-		//side.
+		//iterate over each line in the config file and load the property object
+		//with keys from the config file
+
 		while (line != null) {
-			separator = line.indexOf(keySeparator);
-			if (separator != 0 && separator != -1){
+			delimitDigit = line.indexOf(keySeparator);
+			if (delimitDigit != 0 && delimitDigit != -1){
 				//filling the property map
-				prop.put(line.substring(0, separator), 
-						line.substring(separator + 1));
+
+				//Concatenate string with blank to avoid null
+				sb.append(line.substring(0, delimitDigit));
+				sb.append("");
+
+				//store non-null in var
+				key = sb.toString();
+				//trim away white space
+				key.trim();
+
+				//clear the string builder
+				sb.setLength(0);
+
+				//Concatenate string with blank to avoid null
+				sb.append(line.substring(delimitDigit + 1));
+				sb.append("");
+				
+				//store non-null in var
+				value =  sb.toString();
+				//trim away white space
+				value.trim();
+				
+				//clear the string builder
+				sb.setLength(0);
+
+				//store the neatly trimmed and non-nulls in properties object
+				prop.put(key, value);
+				//TODO remove
+				System.out.println("property added key; " + key + " ***value: " + 
+						value);
 			}
 			line = br.readLine();
 		}

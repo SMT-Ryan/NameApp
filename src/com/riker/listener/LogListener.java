@@ -58,8 +58,10 @@ public class LogListener implements ServletContextListener {
 	}
 
 	/**
+	 * This method changes the file path in the web.xml file into the real 
+	 * file path on the local machine.
+	 * 
 	 * @param context 
-	 * @param event 
 	 * 
 	 */
 	private void pathToFile(ServletContext context) {

@@ -21,6 +21,7 @@ public class ModelName {
 	/**
 	 * holds my first name with last initial
 	 */
+	//TODO possibly add my name as default to properties file
 	public static final String RYAN = "Ryan R.";
 
 	/**
