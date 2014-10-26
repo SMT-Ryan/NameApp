@@ -30,31 +30,30 @@ import org.apache.log4j.PropertyConfigurator;
 public class ConfigListener implements ServletContextListener {
 
 	//the soon to be filled properties object
-	Properties prop = new Properties();
-	
-	/**
-	 * IO error message for the web app.
-	 */
-	private static final String APP_CANT_BE_CONFIGURED_IO = "App can not be "
-			+ "configured, please check that the web.xml, the apps .properties "
-			+ "file, and both files locations are correct.";
-	
+	Properties prop = new Properties();	
 	static String configFilePath = null;
 	static String fullPath = null;
 	static String separator = null;
 	
 	/**
-	 * Blank Path Error message for web app.
+	 * Blank Path Error message for web app.  would normally be found in a message
+	 * class or constant class.
 	 */
 	private static final String BLANK_PATH_ERROR = "the config path is blank please check the web.xml"
-			+ " is: ***" + configFilePath +"** basic configurator used";
+			+ " is: **" + configFilePath +"** configuration not possible";
+	
+	/**
+	 * IO error message for the web app.   would normally be found in a message
+	 * class or constant class.
+	 */
+	private static final String APP_CANT_BE_CONFIGURED_IO = "App can not be "
+			+ "configured, please check that the web.xml, the apps .properties "
+			+ "file, and both files locations are correct.";
 
 	/**
 	 * Default constructor. 
 	 */
 	public ConfigListener() {
-		//TODO remove
-		System.out.println("config listner is constructed");
 	}
 
 	/**
@@ -63,8 +62,6 @@ public class ConfigListener implements ServletContextListener {
 	 * @see ServletContextListener#contextInitialized(ServletContextEvent)
 	 */
 	public void contextInitialized(ServletContextEvent event) { 
-		//TODO remove
-		System.out.println("config listner initialized call");
 
 		//gets context
 		ServletContext context = event.getServletContext();
@@ -85,6 +82,10 @@ public class ConfigListener implements ServletContextListener {
 		
 		//places the properties into context
 		context.setAttribute("properties", prop);
+		
+		//TODO remove
+		System.out.println("config listener complete, properties populated and "
+				+ "added to servlet context.");
 	}
 
 	/**
@@ -98,22 +99,18 @@ public class ConfigListener implements ServletContextListener {
 
 			//if a path to a file exists the listener will search for that 
 			//configuration
-
-			//TODO remove 
-			System.out.println("the file loader config file path is: **" + 
-					configFilePath + "**");
-
-			fullPath = context.getRealPath("/") + configFilePath;
-			//TODO remove
-			System.out.println("the file loader config file  path is: **" + 
-					fullPath +"**");
+			StringBuilder sb = new StringBuilder();
+			
+			sb.append(context.getRealPath("/"));
+			sb.append(configFilePath);
+			
+			fullPath = sb.toString();
 
 			PropertyConfigurator.configure(fullPath);
-
+			sb.setLength(0);
 		}else{
-			//if the path is blank or null it will use the basic config for log4j
+			//if the path is blank or null configuration can not be completed.
 			System.out.println(BLANK_PATH_ERROR);
-			BasicConfigurator.configure();
 		}
 
 	}
@@ -193,9 +190,7 @@ public class ConfigListener implements ServletContextListener {
 
 				//store the neatly trimmed and non-nulls in properties object
 				prop.put(key, value);
-				//TODO remove
-				System.out.println("property added key; " + key + " ***value: " + 
-						value);
+
 			}
 			line = br.readLine();
 		}

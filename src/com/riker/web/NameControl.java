@@ -28,12 +28,7 @@ import com.riker.model.ModelName;
  * @since Oct 20, 2014<p/>
  * @updates:
  ****************************************************************************/
-
-
 public class NameControl extends HttpServlet {
-
-
-
 
 	/**
 	 * constant serial id for this servlet.  
@@ -56,8 +51,6 @@ public class NameControl extends HttpServlet {
 	 */
 	public void init(ServletConfig config) throws ServletException {
 		log.info("init name control called");
-		
-
 	}
 
 	/**
@@ -65,7 +58,7 @@ public class NameControl extends HttpServlet {
 	 */
 	public void doPost(HttpServletRequest request, HttpServletResponse response) 
 			throws IOException, ServletException{
-		log.info("doPost call moved to process");
+		log.debug("doPost call moved to process");
 		processRequest(request, response);
 	}
 
@@ -74,7 +67,7 @@ public class NameControl extends HttpServlet {
 	 */
 	public void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws IOException, ServletException{
-		log.info("doGet call moved to process");
+		log.debug("doGet call moved to process");
 		processRequest(request, response);
 	}
 
@@ -90,7 +83,6 @@ public class NameControl extends HttpServlet {
 	public void processRequest(HttpServletRequest req, HttpServletResponse res) 
 			throws IOException, ServletException{
 		
-		String Resultspath = null;
 		ServletContext context = req.getSession().getServletContext();
 		//ServletContext context=getServletConfig().getServletContext();
 		
@@ -98,18 +90,21 @@ public class NameControl extends HttpServlet {
 		Properties np = new Properties();
 		np = (Properties) context.getAttribute("properties");
     	log.info("properties recovered from context: " + np.size());
-		Resultspath = np.getProperty("ResultsPath");
+		resultsPath = np.getProperty("ResultsPath");
 
 		//creates a new instance of the model, and writes over the 
 		// old request object with the altered new request object
 		ModelName mn = new ModelName();
-		log.info("model name instance, started");
+		log.info("model name instance created");
 		mn.getName(req);
+		log.info("model complete");
 
 		//makes an instance of the view
 		RequestDispatcher view = 
-				req.getRequestDispatcher(Resultspath);
+				req.getRequestDispatcher(resultsPath);
+		log.info("view instance created");
 		//sends the request and response objects with new data to the view
 		view.forward(req, res);
+		log.info("view completed");
 	}
 }
