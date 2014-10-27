@@ -10,11 +10,8 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.PropertyConfigurator;
-
 /****************************************************************************
- * <b>Title</b>: NameAppLogListener.java <p/>
+ * <b>Title</b>: ConfigListener.java <p/>
  * <b>Project</b>: NameApp <p/>
  * <b>Description: </b>This class searches for config file based on the path in 
  * 		the xml. loads a properties object with data stored in file
@@ -83,9 +80,6 @@ public class ConfigListener implements ServletContextListener {
 		//places the properties into context
 		context.setAttribute("properties", prop);
 		
-		//TODO remove
-		System.out.println("config listener complete, properties populated and "
-				+ "added to servlet context.");
 	}
 
 	/**
@@ -106,7 +100,6 @@ public class ConfigListener implements ServletContextListener {
 			
 			fullPath = sb.toString();
 
-			PropertyConfigurator.configure(fullPath);
 			sb.setLength(0);
 		}else{
 			//if the path is blank or null configuration can not be completed.
@@ -134,13 +127,12 @@ public class ConfigListener implements ServletContextListener {
 	 * @see ServletContextListener#contextDestroyed(ServletContextEvent)
 	 */
 	public void contextDestroyed(ServletContextEvent arg0)  { 
-		System.out.println("config listner destroyed");
 	}
 
 	/**
 	 * Locates the configuration file in the file system, and loads the 
 	 * file as a properties object with dynamically set separating key
-	 * (normally =) from value.
+	 * from value.
 	 * 
 	 * @throws IOException if the config file can not be read, throws a
 	 * file not found exception if the config file can not be opened.
@@ -181,7 +173,7 @@ public class ConfigListener implements ServletContextListener {
 				sb.append("");
 				
 				//store non-null in var
-				value =  sb.toString();
+				value = sb.toString();
 				//trim away white space
 				value.trim();
 				

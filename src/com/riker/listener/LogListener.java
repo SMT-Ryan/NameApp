@@ -14,7 +14,7 @@ import org.apache.log4j.PropertyConfigurator;
 
 
 /****************************************************************************
- * <b>Title</b>: NameAppLogListener.java <p/>
+ * <b>Title</b>: LogListener.java <p/>
  * <b>Project</b>: NameApp <p/>
  * <b>Description: </b> This listener will load and configure the log4j logger
  * <p/>
@@ -54,7 +54,7 @@ public class LogListener implements ServletContextListener {
 	 * This method changes the file path in the web.xml file into the real 
 	 * file path on the local machine.
 	 * 
-	 * @param context 
+	 * @param context the servlet context
 	 * 
 	 */
 	private void pathToFile(ServletContext context) {
@@ -93,7 +93,6 @@ public class LogListener implements ServletContextListener {
 	 */
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
-		System.out.println("log listener context Destroyed");
 		//do nothing let the garbage collector take it
 	}
 
