@@ -1,5 +1,8 @@
 package com.riker.model;
 
+import java.util.Properties;
+
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
@@ -21,8 +24,8 @@ public class ModelName {
 	/**
 	 * holds my first name with last initial
 	 */
-	//TODO possibly add my name as default to properties file
-	public static final String RYAN = "Ryan R.";
+	public static final String NO_DEFAULT = "No, Default name listed in the "
+			+ "properites file";
 
 	/**
 	 * creates an instance of the logger
@@ -39,12 +42,25 @@ public class ModelName {
 		log.debug("Name: " + name);
 
 		if (name.length() == 0){
-			log.debug("step default name :**" + name + "**");
-			name = RYAN;
-			log.debug("the string is: " + name);
+			// get servlet context
+			ServletContext context = req.getSession().getServletContext();
+
+			//creates an instance of properties
+			Properties np = new Properties();
+			np = (Properties) context.getAttribute("properties");
+
+			//gets the log4j properties file path from the properties object.
+			String defaultName = np.getProperty("DefaultName");
+			defaultName.trim();
+
+			name= defaultName;
+			log.debug("default name :**" + name + "**");
+			if (defaultName.length() == 0){
+				name = NO_DEFAULT;
+				log.debug("the string is: " + name);
+			}
 		}
 
-		log.debug("step set name :**" + name + "**");
 		req.setAttribute("name", name);
 		log.debug("the string name set to request objects attribue is: " + name);
 	}

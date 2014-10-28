@@ -45,6 +45,8 @@ public class NameControl extends HttpServlet {
 	 */
 	public static String resultsPath = null;
 
+	public static String reqLength = "this is a test";
+
 	/**
 	 * This method over rides the init calls the configure method to 
 	 * load properties
@@ -82,14 +84,13 @@ public class NameControl extends HttpServlet {
 	 */
 	public void processRequest(HttpServletRequest req, HttpServletResponse res) 
 			throws IOException, ServletException{
-		
+
 		ServletContext context = req.getSession().getServletContext();
-		//ServletContext context=getServletConfig().getServletContext();
-		
+
 		log.info("servlet context in control " );
 		Properties np = new Properties();
 		np = (Properties) context.getAttribute("properties");
-    	log.info("properties recovered from context: " + np.size());
+		log.info("properties recovered from context: " + np.size());
 		resultsPath = np.getProperty("ResultsPath");
 
 		//creates a new instance of the model, and writes over the 
@@ -98,6 +99,12 @@ public class NameControl extends HttpServlet {
 		log.info("model name instance created");
 		mn.getName(req);
 		log.info("model complete");
+
+		log.info("what is content length: " + req.getHeader("content-length"));
+		reqLength = req.getHeader("content-length");
+		req.setAttribute("reqLength", reqLength);
+
+		log.info("the content length of the responce is: " + reqLength);
 
 		//makes an instance of the view
 		RequestDispatcher view = 

@@ -31,14 +31,14 @@ public class ConfigListener implements ServletContextListener {
 	static String configFilePath = null;
 	static String fullPath = null;
 	static String separator = null;
-	
+
 	/**
 	 * Blank Path Error message for web app.  would normally be found in a message
 	 * class or constant class.
 	 */
 	private static final String BLANK_PATH_ERROR = "the config path is blank please check the web.xml"
 			+ " is: **" + configFilePath +"** configuration not possible";
-	
+
 	/**
 	 * IO error message for the web app.   would normally be found in a message
 	 * class or constant class.
@@ -76,10 +76,10 @@ public class ConfigListener implements ServletContextListener {
 			System.out.println(APP_CANT_BE_CONFIGURED_IO);
 			e.printStackTrace();
 		}
-		
+
 		//places the properties into context
 		context.setAttribute("properties", prop);
-		
+
 	}
 
 	/**
@@ -94,10 +94,10 @@ public class ConfigListener implements ServletContextListener {
 			//if a path to a file exists the listener will search for that 
 			//configuration
 			StringBuilder sb = new StringBuilder();
-			
+
 			sb.append(context.getRealPath("/"));
 			sb.append(configFilePath);
-			
+
 			fullPath = sb.toString();
 
 			sb.setLength(0);
@@ -171,12 +171,12 @@ public class ConfigListener implements ServletContextListener {
 				//Concatenate string with blank to avoid null
 				sb.append(line.substring(delimitDigit + 1));
 				sb.append("");
-				
+
 				//store non-null in var
 				value = sb.toString();
 				//trim away white space
 				value.trim();
-				
+
 				//clear the string builder
 				sb.setLength(0);
 

@@ -27,8 +27,8 @@ import org.apache.log4j.PropertyConfigurator;
  ****************************************************************************/
 @WebListener
 public class LogListener implements ServletContextListener {
-	
-	
+
+
 	/**
 	 * starting an instance of the log4j logger
 	 */
@@ -44,31 +44,31 @@ public class LogListener implements ServletContextListener {
 
 		// get servlet context
 		ServletContext context = event.getServletContext();
-		
+
 		//load path to prop file
 		pathToFile(context);
-	
+
 	}
 
 	/**
-	 * This method changes the file path in the web.xml file into the real 
+	 * This method changes the relative file path into the real 
 	 * file path on the local machine.
 	 * 
 	 * @param context the servlet context
 	 * 
 	 */
 	private void pathToFile(ServletContext context) {
-		
+
 		//creates an instance of properties
 		Properties np = new Properties();
 		np = (Properties) context.getAttribute("properties");
-		
-    	//gets the log4j properties file path from the properties object.
-    	String configPath = np.getProperty("LogPath");
+
+		//gets the log4j properties file path from the properties object.
+		String configPath = np.getProperty("LogPath");
 		configPath.trim();
-		
+
 		if (configPath.length() > 0){
-			
+
 			//if a path to a file exists the listener will search for that 
 			//configuration
 
@@ -83,7 +83,7 @@ public class LogListener implements ServletContextListener {
 			log.error("Log configuration failed to find a file path.  logger will"
 					+ "use basic configuration.");
 		}
-		
+
 	}
 
 	/**

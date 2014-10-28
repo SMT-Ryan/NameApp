@@ -52,6 +52,17 @@ public class TrafficCounter implements Filter {
 
 		req.setAttribute("TrafficCount", count);
 
+		if(req.getContentLength() > 0 ){
+			log.info("request content greater than 0: " + req.getContentLength());
+		}
+
+		if (res.getBufferSize() >0) {
+			System.out.println("so did the responce actions take place?");
+		}
+
+		//sets the contentLength of the response object to a lucky number.
+		res.setContentLength(11381138);
+
 		// pass the request along the filter chain
 		chain.doFilter(req, res);
 		log.info("Traffic filter chained, request object updated");
